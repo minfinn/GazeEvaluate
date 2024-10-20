@@ -18,7 +18,7 @@ transform:
 test:
   test_id: 0 #MPII person id
   use_gpu: true  # 
-  output_dir: './experiments/mpiifacegaze/face_res50/00/eval'  # output
+  output_dir: './experiments/train(GAZE360,face_res50)/eval(MPII)'  # output
   metric: 'angle_error'  # metric (angle_error, AUC, NSS, etc.)
   batch_size: 64  # 批量大小
   dataloader:  
