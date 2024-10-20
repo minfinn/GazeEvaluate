@@ -6,8 +6,8 @@ model:
   in_stride: 2
 # 数据集相关配置
 dataset:
-  name: 'MPII'  #(EVE, XGAZE, GAZE360, MPII, etc.)
-  data_dir: '/root/autodl-tmp/MPIIFaceGaze_normalizad/mpii.h5'  # dataset path
+  name: 'GAZE360'  #(EVE, XGAZE, GAZE360, MPII, etc.)
+  data_dir: '/root/autodl-tmp/GazeEvaluate/data/Gaze360'  # dataset path
   #data_dir get a path to a .h5 file (MPII) or a folder (GAZE360)
 #transform（MPII）
 transform:
@@ -17,8 +17,8 @@ transform:
 # 测试相关配置
 test:
   test_id: 0 #MPII person id
-  use_gpu: true  # 
-  output_dir: './experiments/train(GAZE360,face_res50)/eval(MPII)'  # output
+  use_gpu: True  # 
+  output_dir: './experiments/train(MPII,face_res50)/eval(GAZE360)'  # output
   metric: 'angle_error'  # metric (angle_error, AUC, NSS, etc.)
   batch_size: 64  # 批量大小
   dataloader:  

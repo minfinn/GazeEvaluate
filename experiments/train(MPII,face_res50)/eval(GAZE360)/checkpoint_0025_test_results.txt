@@ -1,0 +1,18 @@
+# Test Results
+=========================
+Model Name: face_res50
+Dataset Name: GAZE360
+Batch Size: 64
+Number of Workers: 4
+Checkpoint Path: /root/autodl-tmp/MPIIFaceGaze/experiments/mpiifacegaze/multi_region_res50/all/checkpoint_0025.pth
+Evaluation Metric: Mean Angle Error
+
+# Results
+=========================
+Mean Angle Error (deg): 24.87
+Total Test Samples: 3388
+
+# Additional Notes
+=========================
+- The model performed well under various conditions.
+- Future improvements may include additional data augmentation techniques.

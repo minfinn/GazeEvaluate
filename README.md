@@ -7,7 +7,7 @@ config文件格式有所改动，具体参考config_template.yaml,通俗易懂�
 ## MPII
 注意！MPIIFaceGaze需要传入测试集的person id来指定哪个人的数据作为测试集，修改test.test_id(0~14)  
 ## GAZE360
-代码已经完成,需要进行测试.  
+GAZE360的文件路径是一个包含test文件夹的文件夹。 
 
 ## XGAZE
 ...  

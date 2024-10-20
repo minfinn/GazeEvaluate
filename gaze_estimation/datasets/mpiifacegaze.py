@@ -3,7 +3,7 @@ from typing import Callable, Tuple
 import numpy as np
 import h5py
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, IterableDataset
 
 
 class OnePersonDataset(Dataset):

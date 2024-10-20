@@ -74,37 +74,37 @@ class GazeTest:
         #     )
         return test_loader
     
-    def save_test_results(output_file_path, model_name, dataset_name, batch_size, num_workers, checkpoint_path, metrics, total_samples, successful_predictions, failed_predictions):
-    """
-    保存测试结果到文本文件
-    :param output_file_path: 输出文件路径
-    :param model_name: 模型名称
-    :param dataset_name: 数据集名称
-    :param batch_size: 批量大小
-    :param num_workers: 数据加载的子进程数
-    :param checkpoint_path: 模型权重路径
-    :param metrics: 评估指标（如平均角度误差）
-    :param total_samples: 总测试样本数
-    :param successful_predictions: 成功预测的数量
-    :param failed_predictions: 失败预测的数量
-    """
-    with open(output_file_path, 'w') as f:
-        f.write("# Test Results\n")
-        f.write("=========================\n")
-        f.write(f"Model Name: {model_name}\n")
-        f.write(f"Dataset Name: {dataset_name}\n")
-        f.write(f"Batch Size: {batch_size}\n")
-        f.write(f"Number of Workers: {num_workers}\n")
-        f.write(f"Checkpoint Path: {checkpoint_path}\n")
-        f.write(f"Evaluation Metric: Mean Angle Error\n")
-        f.write("\n# Results\n")
-        f.write("=========================\n")
-        f.write(f"Mean Angle Error (deg): {metrics:.2f}\n")
-        f.write(f"Total Test Samples: {total_samples}\n")
-        f.write("\n# Additional Notes\n")
-        f.write("=========================\n")
-        f.write("- The model performed well under various conditions.\n")
-        f.write("- Future improvements may include additional data augmentation techniques.\n")
+    def save_test_results(self, output_file_path, model_name, dataset_name, batch_size, num_workers, checkpoint_path, metrics, total_samples):
+        """
+        保存测试结果到文本文件
+        :param output_file_path: 输出文件路径
+        :param model_name: 模型名称
+        :param dataset_name: 数据集名称
+        :param batch_size: 批量大小
+        :param num_workers: 数据加载的子进程数
+        :param checkpoint_path: 模型权重路径
+        :param metrics: 评估指标（如平均角度误差）
+        :param total_samples: 总测试样本数
+        :param successful_predictions: 成功预测的数量
+        :param failed_predictions: 失败预测的数量
+        """
+        with open(output_file_path, 'w') as f:
+            f.write("# Test Results\n")
+            f.write("=========================\n")
+            f.write(f"Model Name: {model_name}\n")
+            f.write(f"Dataset Name: {dataset_name}\n")
+            f.write(f"Batch Size: {batch_size}\n")
+            f.write(f"Number of Workers: {num_workers}\n")
+            f.write(f"Checkpoint Path: {checkpoint_path}\n")
+            f.write(f"Evaluation Metric: Mean Angle Error\n")
+            f.write("\n# Results\n")
+            f.write("=========================\n")
+            f.write(f"Mean Angle Error (deg): {metrics:.2f}\n")
+            f.write(f"Total Test Samples: {total_samples}\n")
+            f.write("\n# Additional Notes\n")
+            f.write("=========================\n")
+            f.write("- The model performed well under various conditions.\n")
+            f.write("- Future improvements may include additional data augmentation techniques.\n")
 
     def test(self):
         """
@@ -132,7 +132,7 @@ class GazeTest:
         # 用于保存测试结果的变量
         predictions = []
         gts = [] 
-        if self.load_mode == 'load_mpii':
+        if self.load_mode == 'load_mpii' or self.load_mode == 'load_gaze360':
             with torch.no_grad():
                 for images, gazes in tqdm.tqdm(test_loader):
 
@@ -169,20 +169,20 @@ class GazeTest:
             metric, results = self.evaluate((predictions, gts))
         
         output_rootdir = pathlib.Path(self.config.test.output_dir)
-        checkpoint_name = pathlib.Path(self.config.test.checkpoint).stem
+        checkpoint_name = pathlib.Path(self.config.model.checkpoint).stem
         output_file_path = output_rootdir / f'{checkpoint_name}_test_results.txt'
         
         # 保存测试结果
         total_samples = len(test_loader.dataset)
     
-        save_test_results(
+        self.save_test_results(
             output_file_path,
             self.config.model.name,
             self.config.dataset.name,
-            self.config.batch_size,
-            self.config.num_workers,
-            self.config.test.checkpoint,
-            metrics,
+            self.config.test.batch_size,
+            self.config.test.dataloader.num_workers,
+            self.config.model.checkpoint,
+            metric,
             total_samples
         )
 
