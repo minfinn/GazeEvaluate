@@ -1,0 +1,20 @@
+mode: MPIIFaceGaze
+model:
+  name: face_res50
+  checkpoint: /root/autodl-tmp/MPIIFaceGaze/experiments/mpiifacegaze/multi_region_res50/all/checkpoint_0005.pth
+  in_stride: 2
+dataset:
+  name: MPII
+  data_dir: /root/autodl-tmp/MPIIFaceGaze_normalizad/mpii.h5
+transform:
+  mpiifacegaze_face_size: 224
+  mpiifacegaze_gray: False
+test:
+  test_id: 0
+  use_gpu: True
+  output_dir: ./experiments/mpiifacegaze/face_res50/00/eval
+  metric: angle_error
+  batch_size: 64
+  dataloader:
+    num_workers: 4
+    pin_memory: False
