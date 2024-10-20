@@ -9,8 +9,8 @@ Evaluation Metric: Mean Angle Error
 
 # Results
 =========================
-Mean Angle Error (deg): 24.87
-Total Test Samples: 3388
+Mean Angle Error (deg): 21.72
+Total Test Samples: 14263
 
 # Additional Notes
 =========================

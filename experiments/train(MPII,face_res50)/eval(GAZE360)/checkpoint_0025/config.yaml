@@ -5,7 +5,7 @@ model:
   in_stride: 2
 dataset:
   name: GAZE360
-  data_dir: /root/autodl-tmp/GazeEvaluate/data/Gaze360
+  data_dir: /root/autodl-tmp/Gaze360_normalized
 transform:
   mpiifacegaze_face_size: 224
   mpiifacegaze_gray: False
