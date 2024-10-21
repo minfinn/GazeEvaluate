@@ -27,6 +27,8 @@ class GazeTest:
         self.model.to(self.device)
         self.load_mode = self.get_load_mode(config)  # 根据模型和数据集获取加载模式
         self.test_loader = self.load_data()
+        self.num_test = len(self.test_loader.dataset)
+        self.batch_size =  self.config.test.batch_size
         wandb.init(project='project-name', mode="disabled")  # 禁用 WandB 日志记录，可根据需要启用
     
     def get_load_mode(self, config):
@@ -121,7 +123,7 @@ class GazeTest:
         output_dir = output_rootdir / checkpoint_name
         output_dir.mkdir(exist_ok=True, parents=True)
         save_config(self.config, output_dir)
-
+        
 
         # 加载数据
         test_loader = self.test_loader
@@ -150,6 +152,38 @@ class GazeTest:
             predictions = torch.cat(predictions)
             gts = torch.cat(gts)
             metric = float(compute_angle_error(predictions, gts).mean())
+            output_file_path = output_dir / f'{checkpoint_name}_test_results.txt'
+            total_samples = self.num_test
+        
+            self.save_test_results(
+                output_file_path,
+                self.config.model.name,
+                self.config.dataset.name,
+                self.config.test.batch_size,
+                self.config.test.dataloader.num_workers,
+                self.config.model.checkpoint,
+                metric,
+                total_samples
+            )
+        elif self.load_mode == 'load_xgaze':
+            pred_gaze_all = np.zeros((self.num_test, 2))
+            mean_error = []
+            save_index = 0
+
+            for i, (input) in enumerate(self.test_loader):
+
+                face_input_var = torch.autograd.Variable(input["face"].float().cuda())
+                pred_gaze= self.model(face_input_var) 
+                pred_gaze_all[save_index:save_index+self.batch_size, :] = pred_gaze.cpu().data.numpy()
+
+                save_index += face_input_var.size(0) 
+
+            if save_index != self.num_test:
+                print('the test samples save_index ', save_index, ' is not equal to the whole test set ', self.num_test)
+
+            print('Tested on : ', pred_gaze_all.shape[0], ' samples')
+            output_file_path = output_dir/ f'within_eva_{checkpoint_name}_test_results.txt'
+            np.savetxt('within_eva_results.txt', pred_gaze_all, delimiter=',')
         else:
             predictions = []
             gts = []
@@ -167,24 +201,23 @@ class GazeTest:
             
             # 评估指标计算
             metric, results = self.evaluate((predictions, gts))
+            # 保存测试结果
+            output_file_path = output_dir / f'{checkpoint_name}_test_results.txt'
+            total_samples = self.num_test
         
-        output_rootdir = pathlib.Path(self.config.test.output_dir)
-        checkpoint_name = pathlib.Path(self.config.model.checkpoint).stem
-        output_file_path = output_rootdir / f'{checkpoint_name}_test_results.txt'
+            self.save_test_results(
+                output_file_path,
+                self.config.model.name,
+                self.config.dataset.name,
+                self.config.test.batch_size,
+                self.config.test.dataloader.num_workers,
+                self.config.model.checkpoint,
+                metric,
+                total_samples
+            )
         
-        # 保存测试结果
-        total_samples = len(test_loader.dataset)
-    
-        self.save_test_results(
-            output_file_path,
-            self.config.model.name,
-            self.config.dataset.name,
-            self.config.test.batch_size,
-            self.config.test.dataloader.num_workers,
-            self.config.model.checkpoint,
-            metric,
-            total_samples
-        )
+        
+
 
 
 
@@ -234,8 +267,45 @@ def test(model, test_loader, config):
     angle_error = float(compute_angle_error(predictions, gts).mean())
     return predictions, gts, angle_error
 
+"""
+below from ETH-XGaze
+"""
 
+def test(self):
+    """
+    Test the pre-treained model on the whole test set. Note there is no label released to public, you can
+    only save the predicted results. You then need to submit the test resutls to our evaluation website to
+    get the final gaze estimation error.
+    """
+    print('We are now doing the final test')
+    self.model.eval()
+    self.load_checkpoint(is_strict=False, input_file_path=self.pre_trained_model_path)
+    pred_gaze_all = np.zeros((self.num_test, 2))
+    mean_error = []
+    save_index = 0
 
+    print('Testing on ', self.num_test, ' samples')
+
+    for i, (input) in enumerate(self.test_loader):
+        # depending on load mode, input differently
+        if self.load_mode == "load_single_face":
+            face_input_var = torch.autograd.Variable(input["face"].float().cuda())
+            pred_gaze= self.model(face_input_var) 
+        elif self.load_mode == "load_multi_region":
+            face_input_var = torch.autograd.Variable(input["face"].float().cuda())
+            left_eye_input_var = torch.autograd.Variable(input["left_eye"].float().cuda()) 
+            right_eye_input_var = torch.autograd.Variable(input["right_eye"].float().cuda())
+            pred_gaze= self.model(left_eye_input_var, right_eye_input_var, face_input_var) 
+
+        pred_gaze_all[save_index:save_index+self.batch_size, :] = pred_gaze.cpu().data.numpy()
+
+        save_index += face_input_var.size(0) 
+
+    if save_index != self.num_test:
+        print('the test samples save_index ', save_index, ' is not equal to the whole test set ', self.num_test)
+
+    print('Tested on : ', pred_gaze_all.shape[0], ' samples')
+    np.savetxt('within_eva_results.txt', pred_gaze_all, delimiter=',')
 
 #REMOVED
 # def load_config():
