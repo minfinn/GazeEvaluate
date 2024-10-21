@@ -11,7 +11,7 @@ config文件格式有所改动，具体参考config_template.yaml,通俗易懂�
 
 ## Dataset
 建议的数据格式如下：  
-'
+```
 --data  
     --MPII  
         --00.h5  
@@ -23,17 +23,17 @@ config文件格式有所改动，具体参考config_template.yaml,通俗易懂�
             --30.h5  
             ...  
     --XGAZE  
-        --train_test_split.json
-        --train
-            ...
-        --test
-            --00.h5
-            --01.h5
-            ...
+        --train_test_split.json  
+        --train  
+            ...  
+        --test  
+            --00.h5  
+            --01.h5  
+            ...  
     --EVE  
-        ...  
+        ...   
     ...  
-'
+```
 ## MPII
 注意！MPIIFaceGaze需要传入测试集的person id来指定哪个人的数据作为测试集，修改test.test_id(0~14)  
 
