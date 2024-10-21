@@ -3,6 +3,8 @@ from typing import List, Union
 import json
 import torch
 import yacs.config
+import os
+import random
 from torch.utils.data import Dataset
 from ..transforms import create_transform
 from ..types import GazeEstimationMethod
@@ -152,6 +154,7 @@ def create_testset(config: yacs.config.CfgNode,
         assert dataset_dir.exists()
         transform = create_transform(config)
         refer_list_file = os.path.join(dataset_dir, 'train_test_split.json')
+
         print('load the test file list from: ', refer_list_file)
 
         with open(refer_list_file, 'r') as f:
