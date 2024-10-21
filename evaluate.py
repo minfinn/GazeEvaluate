@@ -89,7 +89,7 @@ class GazeTest:
         :param failed_predictions: 失败预测的数量
         """
         with open(output_file_path, 'w') as f:
-            f.write("# Test Results\n")
+            f.write("# Test Configs\n")
             f.write("=========================\n")
             f.write(f"Model Name: {model_name}\n")
             f.write(f"Dataset Name: {dataset_name}\n")

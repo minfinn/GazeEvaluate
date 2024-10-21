@@ -2,7 +2,7 @@
 mode: FaceGaze  
 model:
   name: face_res50  #  (face_res50, multi_region_res50, etc.)
-  checkpoint: '/root/autodl-tmp/MPIIFaceGaze/experiments/mpiifacegaze/multi_region_res50/all/checkpoint_0025.pth'  # weights
+  checkpoint: '/root/autodl-tmp/GazeEvaluate/ckpt/MPII/checkpoint_0005.pth'  # weights
   in_stride: 2
 # 数据集相关配置
 dataset:
