@@ -165,13 +165,14 @@ class GazeTest:
                 metric,
                 total_samples
             )
+            return predictions, gts, metric
         elif self.load_mode == 'load_xgaze':
             pred_gaze_all = np.zeros((self.num_test, 2))
             mean_error = []
             save_index = 0
 
-            for i, (input) in enumerate(self.test_loader):
-                print(input.shape)
+            for input in tqdm.tqdm(test_loader):
+                # print(input.shape)
 
 
                 face_input_var = torch.autograd.Variable(input.float().cuda())
@@ -185,7 +186,8 @@ class GazeTest:
 
             print('Tested on : ', pred_gaze_all.shape[0], ' samples')
             output_file_path = output_dir/ f'within_eva_{checkpoint_name}_test_results.txt'
-            np.savetxt('within_eva_results.txt', pred_gaze_all, delimiter=',')
+            np.savetxt(output_file_path, pred_gaze_all, delimiter=',')
+            return pred_gaze_all
         else:
             predictions = []
             gts = []
@@ -217,14 +219,14 @@ class GazeTest:
                 metric,
                 total_samples
             )
+            return predictions, gts, metric
+        
+
+
+
+
         
         
-
-
-
-
-        
-        return predictions, gts, metric
     
     def evaluate(self, results):
         """
@@ -344,7 +346,12 @@ def main():
     checkpoint = torch.load(config.model.checkpoint, map_location='cpu')
     model.load_state_dict(checkpoint['model'])
     Test = GazeTest(model, config)
-    predictions, gts, angle_error = Test.test()
-    print(f'The mean angle error (deg): {angle_error:.2f}')
+    if config.dataset.name == "MPII" or config.dataset.name == "GAZE360":
+        predictions, gts, angle_error = Test.test()
+        print(f'The mean angle error (deg): {angle_error:.2f}')
+    elif config.dataset.name == "XGAZE" or config.dataset.name == "EVE":
+        predictions = Test.test()
+        print(f'The predictions are saved')
+    
 if __name__ == '__main__':
     main()
