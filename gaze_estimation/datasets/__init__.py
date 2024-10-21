@@ -1,13 +1,12 @@
 import pathlib
 from typing import List, Union
-
+import json
 import torch
 import yacs.config
 from torch.utils.data import Dataset
-
 from ..transforms import create_transform
 from ..types import GazeEstimationMethod
-from .mpiifacegaze import OnePersonDataset, Gaze360IterableDataset
+from .mpiifacegaze import OnePersonDataset, Gaze360IterableDataset, XGazeDataset
 
 
 def create_dataset(config: yacs.config.CfgNode,
@@ -146,5 +145,21 @@ def create_testset(config: yacs.config.CfgNode,
         test_files = [file for file in test_path.iterdir() if file.suffix == '.h5']
         
         test_dataset = [Gaze360IterableDataset(file, transform, load_mode) for file in test_files]
-        
+    elif config.dataset.name == 'XGAZE':
+        assert dataset_dir.exists()
+        transform = create_transform(config)
+        refer_list_file = os.path.join(dataset_dir, 'train_test_split.json')
+        print('load the test file list from: ', refer_list_file)
+
+        with open(refer_list_file, 'r') as f:
+            datastore = json.load(f)
+
+        # there are three subsets for ETH-XGaze dataset: train, test and test_person_specific
+        # train set: the training set includes 80 participants data
+        # test set: the test set for cross-dataset and within-dataset evaluations
+        # test_person_specific: evaluation subset for the person specific setting
+        sub_folder_use = 'test'
+        test_dataset = GazeDataset(dataset_path=dataset_dir, keys_to_use=datastore[sub_folder_use], sub_folder=sub_folder_use,
+                            transform=transform, is_shuffle=True, is_load_label=False)
+
         return test_dataset

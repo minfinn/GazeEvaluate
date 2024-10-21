@@ -63,4 +63,12 @@ def create_testloader(
             pin_memory=config.test.dataloader.pin_memory,
             drop_last=False,
             )
+    elif config.dataset.name == 'XGAZE':
+        test_loader = DataLoader(
+            test_dataset, 
+            batch_size=config.test.batch_size, 
+            num_workers=config.test.dataloader.num_workers,
+            pin_memory=config.test.dataloader.pin_memory,
+            drop_last=False,
+            )
     return test_loader
