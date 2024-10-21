@@ -146,6 +146,9 @@ def create_testset(config: yacs.config.CfgNode,
         
         test_dataset = [Gaze360IterableDataset(file, transform, load_mode) for file in test_files]
     elif config.dataset.name == 'XGAZE':
+        '''
+        test_dataset creation of XGAZE base on original code offered by ETH-XGaze
+        '''
         assert dataset_dir.exists()
         transform = create_transform(config)
         refer_list_file = os.path.join(dataset_dir, 'train_test_split.json')
@@ -159,7 +162,7 @@ def create_testset(config: yacs.config.CfgNode,
         # test set: the test set for cross-dataset and within-dataset evaluations
         # test_person_specific: evaluation subset for the person specific setting
         sub_folder_use = 'test'
-        test_dataset = GazeDataset(dataset_path=dataset_dir, keys_to_use=datastore[sub_folder_use], sub_folder=sub_folder_use,
+        test_dataset = XGazeDataset(dataset_path=dataset_dir, keys_to_use=datastore[sub_folder_use], sub_folder=sub_folder_use,
                             transform=transform, is_shuffle=True, is_load_label=False)
 
         return test_dataset
