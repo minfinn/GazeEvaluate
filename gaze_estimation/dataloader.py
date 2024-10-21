@@ -60,6 +60,7 @@ def create_testloader(
             ChainDataset(test_dataset), 
             batch_size=config.test.batch_size, 
             num_workers=config.test.dataloader.num_workers,
+            shuffle=False,
             pin_memory=config.test.dataloader.pin_memory,
             drop_last=False,
             )
@@ -68,6 +69,7 @@ def create_testloader(
             test_dataset, 
             batch_size=config.test.batch_size, 
             num_workers=config.test.dataloader.num_workers,
+            shuffle=False,
             pin_memory=config.test.dataloader.pin_memory,
             drop_last=False,
             )

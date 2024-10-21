@@ -45,19 +45,19 @@ def _create_mpiifacegaze_transform(config: yacs.config.CfgNode) -> Any:
         transform = torchvision.transforms.Compose([
             # resize,
             to_gray,
-            # torchvision.transforms.Lambda(lambda x: x.transpose(2, 0, 1)),
+            torchvision.transforms.Lambda(lambda x: x.transpose(2, 0, 1)),
             scale,
             torch.from_numpy,
-            # torchvision.transforms.Normalize(mean=[0.406, 0.456, 0.485],
+            # torchvision.transforms.Normalize(mean=[0.406, 0.456, 0.485],   #
             #                                 std=[0.225, 0.224, 0.229]),
-            torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406],
+            torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], #RGB
                                             std=[0.229, 0.224, 0.225]),
 
         ])
     elif config.dataset.name == 'GAZE360' :
         #TODO(finn): change transform to ensure image format is [3, 224, 224] with RGB 
         transform = torchvision.transforms.Compose([
-            resize,
+            # resize,
             to_gray,
             torchvision.transforms.Lambda(lambda x: x.transpose(2, 0, 1)),
             scale,
