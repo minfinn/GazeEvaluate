@@ -55,13 +55,13 @@ class GazeTest:
         :return: 数据加载器
         """
         #TODO: def create_dataloader(data_dir, batch_size, load_mode, is_shuffle=False, num_workers)
-        if self.load_mode == "load_mpii" or self.load_mode == "load_gaze360":
+        if self.load_mode == "load_mpii" or self.load_mode == "load_gaze360" or self.load_mode == "load_xgaze":
             test_loader = create_testloader(self.config, is_train=False)
 
-        elif self.load_mode == "load_xgaze":
+        else:
             #data_dir, batch_size, load_mode, num_workers=4, is_shuffle=True
-            test_loader = get_test_loader(self.config.data_dir, 
-                self.config.batch_size, 
+            test_loader = get_test_loader(self.config.dataset.data_dir, 
+                self.config.test.batch_size, 
                 self.load_mode,  
                 num_workers=self.config.num_workers,
                 is_shuffle=False
@@ -171,8 +171,10 @@ class GazeTest:
             save_index = 0
 
             for i, (input) in enumerate(self.test_loader):
+                print(input.shape)
 
-                face_input_var = torch.autograd.Variable(input["face"].float().cuda())
+
+                face_input_var = torch.autograd.Variable(input.float().cuda())
                 pred_gaze= self.model(face_input_var) 
                 pred_gaze_all[save_index:save_index+self.batch_size, :] = pred_gaze.cpu().data.numpy()
 
@@ -336,13 +338,13 @@ def main():
     # output_dir.mkdir(exist_ok=True, parents=True)
     # save_config(config, output_dir)
 
-    test_loader = create_testloader(config, is_train=False)
+    # test_loader = create_testloader(config, is_train=False)
 
     model = create_model(config)
     checkpoint = torch.load(config.model.checkpoint, map_location='cpu')
     model.load_state_dict(checkpoint['model'])
-    MPIITest = GazeTest(model, config)
-    predictions, gts, angle_error = MPIITest.test()
+    Test = GazeTest(model, config)
+    predictions, gts, angle_error = Test.test()
     print(f'The mean angle error (deg): {angle_error:.2f}')
 if __name__ == '__main__':
     main()
