@@ -1,5 +1,5 @@
 # Evaluate
-主体代码在evaluate.py中    
+主体代码在GazeTest.py,evaluate.py中    
   
 config文件格式有所改动，具体参考config_template.yaml,通俗易懂只需要传入少量参数。  
   
