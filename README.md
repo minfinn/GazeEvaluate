@@ -24,6 +24,11 @@ config文件格式有所改动，具体参考config_template.yaml,通俗易懂�
             --24.h5  
             --30.h5  
             ...  
+    --ColumbiaGaze
+        --test
+            --01.h5
+            --02.h5
+            ...
     --XGAZE  
         --train_test_split.json  
         --train  
@@ -44,7 +49,11 @@ GAZE360的文件路径是一个包含test文件夹的文件夹
 
 ## XGAZE
 XGAZE的测试集不包含真实的gaze label,测试XGAZE时，evaluate.py将会在结果文件夹中产生'within_eva_xxx.txt'预测结果文件，用于上传至网络平台进行测试      
-XGAZE的测试基本基于源代码，在数据文件夹中需要原有的train_test_split.json文件，用于得到test的索引。
+XGAZE的测试基本基于源代码，在数据文件夹中需要原有的train_test_split.json文件，用于得到test的索引。  
+
+## ColumbiaGaze
+ColumbiaGaze的evaluate过程与GAZE360几乎完全相同。其数据文件路径同样需要一个含有.h5数据文件的test文件夹。  
+
 ## EVE
 ...  
 
