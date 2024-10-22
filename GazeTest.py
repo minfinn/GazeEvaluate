@@ -40,6 +40,8 @@ class GazeTest:
             return "load_eve"
         elif config.dataset.name == "GAZE360":
             return "load_gaze360"
+        elif config.dataset.name == "ColumbiaGaze":
+            return "load_columbiagaze"
         elif config.dataset.name == "XGAZE":
             return "load_xgaze"
         elif config.dataset.name == "MPII":
@@ -54,7 +56,7 @@ class GazeTest:
         :return: 数据加载器
         """
         #TODO: def create_dataloader(data_dir, batch_size, load_mode, is_shuffle=False, num_workers)
-        if self.load_mode == "load_mpii" or self.load_mode == "load_gaze360" or self.load_mode == "load_xgaze":
+        if self.load_mode == "load_mpii" or self.load_mode == "load_gaze360" or self.load_mode == "load_xgaze" or self.load_mode == "load_columbiagaze":
             test_loader = create_testloader(self.config, is_train=False)
 
         else:

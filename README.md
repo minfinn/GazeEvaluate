@@ -60,5 +60,5 @@ ColumbiaGaze的evaluate过程与GAZE360几乎完全相同。其数据文件路�
 ## test
 主体代码在evaluate.py中,具体实现依靠Class GazeTest.  
 ```
-python evaluate.py --config /path/to/your config.yaml
+python evaluate.py --config /path/to/your/config.yaml
 ```

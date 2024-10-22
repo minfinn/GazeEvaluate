@@ -173,11 +173,11 @@ def create_testset(config: yacs.config.CfgNode,
 
         return test_dataset
     
-    elif config.dataset.name == 'ColumbiaGaze'
-        print('load onedir successfully')
-
-        tset_path = dataset_dir / 'test'
+    elif config.dataset.name == 'ColumbiaGaze':
+        
+        test_path = dataset_dir / 'test'
         assert test_path.exists()
+        print('load onedir successfully')
         transform = create_transform(config)
 
         if config.model.name == 'face_res50':
@@ -189,7 +189,7 @@ def create_testset(config: yacs.config.CfgNode,
         else:
             raise Exception("Please enter a correct model name or choose a correct load mode for your model (load_single_face or load_multi_region).")
 
-        test_files = [file for file in tset_path.iterdir() if file.suffix == '.h5'] #get .h5 test file
+        test_files = [file for file in test_path.iterdir() if file.suffix == '.h5'] #get .h5 test file
         test_num = len(test_files)
 
         # random.shuffle(train_val_files)

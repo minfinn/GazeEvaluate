@@ -6,7 +6,7 @@ model:
   in_stride: 2
 # 数据集相关配置
 dataset:
-  name: 'XGAZE'  #(EVE, XGAZE, GAZE360, MPII, etc.)
+  name: 'XGAZE'  #(EVE, XGAZE, GAZE360, ColumbiaGaze, MPII, etc.)
   data_dir: '/root/autodl-tmp/Gaze_Datesets/xgaze'  # dataset path
   #data_dir get a path to a .h5 file (MPII) or a folder (GAZE360)
 #transform（MPII）
