@@ -9,6 +9,7 @@ from gaze_estimation import (GazeEstimationMethod, create_testloader,
                              create_model)
 from gaze_estimation.utils import compute_angle_error, load_config, save_config
 from test_loader import get_test_loader
+from utils import pitchyaw_to_vector, to_screen_coordinates2
 #from evaluation import evaluate_metrics  # if have a evaluation
 
 
@@ -132,7 +133,8 @@ class GazeTest:
         # 用于保存测试结果的变量
         predictions = []
         gts = [] 
-        if self.load_mode == 'load_mpii' or self.load_mode == 'load_gaze360':
+
+        if self.load_mode == 'load_mpii' or self.load_mode == 'load_gaze360' or self.load_mode == 'load_columbiagaze':
             with torch.no_grad():
                 for images, gazes in tqdm.tqdm(test_loader):
 
@@ -164,9 +166,32 @@ class GazeTest:
                 total_samples
             )
             return predictions, gts, metric
+
+
+        #TODO:trans predictions to screen coordinates and then create a right result_to_save
+        if self.load_mode == 'load_eve':
+            template_path = './template.pkl.gz' # result template
+
+
+            with torch.no_grad():
+                for images in tqdm.tqdm(test_loader):
+
+                    image = images['face'].to(self.device)
+                    outputs = self.model(image)
+                    predictions.append(outputs.cpu())
+
+            predictions = torch.cat(predictions)
+            
+            preds_3D = pitchyaw_to_vector(predictions)
+
+            
+            
+            
+        
+            return predictions
+
         elif self.load_mode == 'load_xgaze':
             pred_gaze_all = np.zeros((self.num_test, 2))
-            mean_error = []
             save_index = 0
 
             for input in tqdm.tqdm(test_loader):
@@ -186,6 +211,8 @@ class GazeTest:
             output_file_path = output_dir/ f'within_eva_{checkpoint_name}_test_results.txt'
             np.savetxt(output_file_path, pred_gaze_all, delimiter=',')
             return pred_gaze_all
+
+
         else:
             predictions = []
             gts = []

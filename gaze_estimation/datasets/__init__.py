@@ -8,7 +8,7 @@ import random
 from torch.utils.data import Dataset
 from ..transforms import create_transform
 from ..types import GazeEstimationMethod
-from .mpiifacegaze import OnePersonDataset, Gaze360IterableDataset, XGazeDataset
+from .mpiifacegaze import OnePersonDataset, Gaze360IterableDataset, XGazeDataset, ColumbiaIterableDataset
 
 
 def create_dataset(config: yacs.config.CfgNode,
@@ -130,6 +130,7 @@ def create_testset(config: yacs.config.CfgNode,
         assert len(test_dataset) == 3000
         return test_dataset
     
+
     elif config.dataset.name == 'GAZE360':
         test_path = dataset_dir / 'test'
         assert test_path.exists()
@@ -147,6 +148,8 @@ def create_testset(config: yacs.config.CfgNode,
         test_files = [file for file in test_path.iterdir() if file.suffix == '.h5']
         
         test_dataset = [Gaze360IterableDataset(file, transform, load_mode) for file in test_files]
+
+
     elif config.dataset.name == 'XGAZE':
         '''
         test_dataset creation of XGAZE base on original code offered by ETH-XGaze
@@ -168,4 +171,32 @@ def create_testset(config: yacs.config.CfgNode,
         test_dataset = XGazeDataset(dataset_path=dataset_dir, keys_to_use=datastore[sub_folder_use], sub_folder=sub_folder_use,
                             transform=transform, is_shuffle=True, is_load_label=False)
 
+        return test_dataset
+    
+    elif config.dataset.name == 'ColumbiaGaze'
+        print('load onedir successfully')
+
+        tset_path = dataset_dir / 'test'
+        assert test_path.exists()
+        transform = create_transform(config)
+
+        if config.model.name == 'face_res50':
+            load_mode = 'load_single_face'
+        elif config.model.name == 'multi_region_res50':
+            load_mode = 'load_multi_region'
+        elif config.model.name == 'multi_region_res50_share_eyenet':
+            load_mode = 'load_multi_region'
+        else:
+            raise Exception("Please enter a correct model name or choose a correct load mode for your model (load_single_face or load_multi_region).")
+
+        test_files = [file for file in tset_path.iterdir() if file.suffix == '.h5'] #get .h5 test file
+        test_num = len(test_files)
+
+        # random.shuffle(train_val_files)
+
+        # train_files = train_val_files[:train_num]
+        # val_files = train_val_files[train_num:]
+
+        test_dataset = [ColumbiaIterableDataset(file, transform, load_mode) for file in test_files]
+            
         return test_dataset

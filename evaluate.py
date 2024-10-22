@@ -35,7 +35,7 @@ def main():
     checkpoint = torch.load(config.model.checkpoint, map_location='cpu')
     model.load_state_dict(checkpoint['model'])
     Test = GazeTest(model, config)
-    if config.dataset.name == "MPII" or config.dataset.name == "GAZE360":
+    if config.dataset.name == "MPII" or config.dataset.name == "GAZE360" or config.dataset.name == 'ColumbiaGaze':
         predictions, gts, angle_error = Test.test()
         print(f'The mean angle error (deg): {angle_error:.2f}')
     elif config.dataset.name == "XGAZE" or config.dataset.name == "EVE":
