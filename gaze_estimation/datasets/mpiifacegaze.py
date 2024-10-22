@@ -60,11 +60,14 @@ class OnePersonDataset(Dataset):
                 left_eye = f.get(f'{self.person_id_str}/left/{index:04}')[()]
                 right_eye = f.get(f'{self.person_id_str}/right/{index:04}')[()]
                 
-        image=np.transpose(image, (1,2,0))
-        '''from 448*448*3 to 224*224*3'''       
-        start_x = (image.shape[1] - 224) // 2
-        start_y = (image.shape[0] - 224) // 2
-        image = image[start_y:start_y + 224, start_x:start_x + 224]
+        image=np.transpose(image, (1,2,0)) #(C,H,W) -> (H,W,C)
+        #BELOW IS TO CROP IMAGE,NOW WE ARE USING RESIZE TO CHANGE SIZE
+        # '''from 448*448*3 to 224*224*3'''       
+        # start_x = (image.shape[1] - 224) // 2
+        # start_y = (image.shape[0] - 224) // 2
+        # image = image[start_y:start_y + 224, start_x:start_x + 224]
+
+
         image = image[:, :, [2, 1, 0]]  #from BGR to RGB
         image = self.transform(image)
         gaze = torch.from_numpy(gaze)
