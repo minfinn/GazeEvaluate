@@ -56,7 +56,7 @@ class GazeTest:
         :return: 数据加载器
         """
         #TODO: def create_dataloader(data_dir, batch_size, load_mode, is_shuffle=False, num_workers)
-        if self.load_mode == "load_mpii" or self.load_mode == "load_gaze360" or self.load_mode == "load_xgaze" or self.load_mode == "load_columbiagaze":
+        if self.load_mode == "load_mpii" or self.load_mode == "load_gaze360" or self.load_mode == "load_xgaze" or self.load_mode == "load_columbiagaze" or self.load_mode == "load_eve":
             test_loader = create_testloader(self.config, is_train=False)
 
         else:
@@ -181,7 +181,7 @@ class GazeTest:
                     image = images['face'].to(self.device)
                     outputs = self.model(image)
                     predictions.append(outputs.cpu())
-
+            print("Prediction is OK")
             predictions = torch.cat(predictions)
             
             preds_3D = pitchyaw_to_vector(predictions)

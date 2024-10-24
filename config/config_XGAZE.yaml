@@ -1,0 +1,30 @@
+# 模型相关配置
+mode: FaceGaze  
+model:
+  name: face_res50  #  (face_res50, multi_region_res50, etc.)
+  checkpoint: '/root/autodl-tmp/GazeEvaluate/ckpt/MPII/checkpoint_0005.pth'  # weights
+  in_stride: 2
+# 数据集相关配置
+dataset:
+  name: 'XGAZE'  #(EVE, XGAZE, GAZE360, ColumbiaGaze, MPII, etc.)
+  data_dir: '/root/autodl-tmp/Gaze_Datesets/xgaze'  # dataset path
+  #data_dir get a path to a .h5 file (MPII) or a folder (GAZE360)
+#transform（MPII）
+transform:
+  mpiifacegaze_face_size: 224
+  mpiifacegaze_gray: False  
+  
+# 测试相关配置
+test:
+  test_id: 0 #MPII person id
+  use_gpu: True  # 
+  output_dir: './experiments/train(MPII,face_res50)/eval(XGAZE)'  # output
+  metric: 'angle_error'  # metric (angle_error, AUC, NSS, etc.)
+  batch_size: 64  # 批量大小
+  dataloader:  
+    num_workers: 4  # 数据加载的子进程数
+    pin_memory: False
+# 日志配置
+# logging:
+#   wandb_project: 'gaze-test-project'  # wandb 项目名称
+#   log_to_wandb: false  # 是否启用 WandB 日志记录

@@ -130,22 +130,22 @@ class EVEIterableDataset(IterableDataset):
     def __iter__(self):
         with h5py.File(self.full_path, 'r') as f:
             image_data = f['face']
-            gaze_data = f['gaze']
+            # gaze_data = f['gaze']
             for i in range(len(image_data)):
                 image = image_data[i]    # (224*224*3) and BGR
                 image=image[:, :, [2, 1, 0]]  #from BGR to RGB
-                gaze = gaze_data[i]
+                # gaze = gaze_data[i]
                 '''检验pitchyaw顺序'''
                 # if i==30:
                 #     cv2.imwrite(os.path.join('/root/autodl-tmp/image', f'image_save_{i}.png'), image)
                 #     print(gaze)
                 # Apply transformations
                 image = self.transform(image)
-                gaze = torch.from_numpy(gaze)
-                gaze = gaze.squeeze(0)
+                # gaze = torch.from_numpy(gaze)
+                # gaze = gaze.squeeze(0)
                 images = {"face": image}
                 
-                yield images, gaze
+                yield images
                 
     def __len__(self):
         return self.length
