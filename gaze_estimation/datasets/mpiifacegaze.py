@@ -118,6 +118,39 @@ class Gaze360IterableDataset(IterableDataset):
     def __len__(self):
         return self.length
 
+
+class EVEIterableDataset(IterableDataset):
+    def __init__(self, full_path, transform: Callable, load_model: str):
+        self.transform = transform
+        self.load_model = load_model
+        self.full_path = full_path
+        with h5py.File(self.full_path, 'r') as f:
+            self.length = len(f['face'])
+
+    def __iter__(self):
+        with h5py.File(self.full_path, 'r') as f:
+            image_data = f['face']
+            gaze_data = f['gaze']
+            for i in range(len(image_data)):
+                image = image_data[i]    # (224*224*3) and BGR
+                image=image[:, :, [2, 1, 0]]  #from BGR to RGB
+                gaze = gaze_data[i]
+                '''检验pitchyaw顺序'''
+                # if i==30:
+                #     cv2.imwrite(os.path.join('/root/autodl-tmp/image', f'image_save_{i}.png'), image)
+                #     print(gaze)
+                # Apply transformations
+                image = self.transform(image)
+                gaze = torch.from_numpy(gaze)
+                gaze = gaze.squeeze(0)
+                images = {"face": image}
+                
+                yield images, gaze
+                
+    def __len__(self):
+        return self.length
+
+
 class ColumbiaIterableDataset(IterableDataset):
     def __init__(self, full_path, transform: Callable, load_model: str):
         self.transform = transform

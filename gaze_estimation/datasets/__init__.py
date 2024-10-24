@@ -8,7 +8,7 @@ import random
 from torch.utils.data import Dataset
 from ..transforms import create_transform
 from ..types import GazeEstimationMethod
-from .mpiifacegaze import OnePersonDataset, Gaze360IterableDataset, XGazeDataset, ColumbiaIterableDataset
+from .mpiifacegaze import OnePersonDataset, Gaze360IterableDataset, XGazeDataset, ColumbiaIterableDataset, EVEIterableDataset
 
 
 def create_dataset(config: yacs.config.CfgNode,
@@ -199,4 +199,38 @@ def create_testset(config: yacs.config.CfgNode,
 
         test_dataset = [ColumbiaIterableDataset(file, transform, load_mode) for file in test_files]
             
+        return test_dataset
+    
+    elif config.dataset.name == 'EVE':
+
+        test_paths = [dataset_dir / f'test{i:02d}' for i in range(1,11)]#participant
+        for test_path in test_paths:
+            assert test_path.exists()
+        print('load dir successfully')
+
+
+        if config.model.name == 'face_res50':
+            load_mode = 'load_single_face'
+        elif config.model.name == 'multi_region_res50':
+            load_mode = 'load_multi_region'
+        elif config.model.name == 'multi_region_res50_share_eyenet':
+            load_mode = 'load_multi_region'
+        else:
+            raise Exception("Please enter a correct model name or choose a correct load mode for your model (load_single_face or load_multi_region).")
+        test_sub_paths = []
+        for test_path in test_paths:
+            subfolders = [folder for folder in test_path.iterdir() if folder.is_dir()]
+            test_sub_paths.extend(subfolders)  #subfolder
+
+
+        transform = create_transform(config)
+        test_files = []
+        
+        for test_sub_path in test_sub_paths:
+            for file in test_sub_path.iterdir(): #cam
+                if file.suffix == '.h5':
+                    test_files.append(file)
+        
+        test_dataset = [EVEIterableDataset(file, transform, load_mode) for file in test_files]
+        
         return test_dataset

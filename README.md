@@ -38,7 +38,19 @@ config文件格式有所改动，具体参考config_template.yaml,通俗易懂�
             --01.h5  
             ...  
     --EVE  
-        ...   
+        --test01
+            --subfolder_name01
+                --cam1.h5
+                --cam2.h5
+                ...
+            --subfolder_name02
+                --cam1.h5
+                ...
+            ...
+        --test02
+            ...
+        --test03
+        ...
     ...  
 ```
 ## MPII
@@ -55,7 +67,7 @@ XGAZE的测试基本基于源代码，在数据文件夹中需要原有的train_
 ColumbiaGaze的evaluate过程与GAZE360几乎完全相同。其数据文件路径同样需要一个含有.h5数据文件的test文件夹。  
 
 ## EVE
-...  
+EVE目前只能得到三维的预测结果无法完成PoG的转化，提交结果需要得到PoG二维坐标。
 
 ## test
 主体代码在evaluate.py中,具体实现依靠Class GazeTest.  

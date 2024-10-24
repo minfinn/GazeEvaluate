@@ -73,6 +73,15 @@ def create_testloader(
             pin_memory=config.test.dataloader.pin_memory,
             drop_last=False,
             )
+    elif config.dataset.name == 'EVE':
+        test_loader = DataLoader(
+            ChainDataset(test_dataset),
+            batch_size=config.test.batch_size,
+            num_workers=config.test.dataloader.num_workers,
+            shuffle=False,
+            pin_memory=config.test.dataloader.pin_memory,
+            drop_last=False,
+            )
     # elif config.dataset.name == 'ColumbiaGaze':
     #     test_loader = DataLoader(
     #         ChainDataset(test_dataset), 

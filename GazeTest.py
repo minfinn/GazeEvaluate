@@ -172,7 +172,7 @@ class GazeTest:
 
         #TODO:trans predictions to screen coordinates and then create a right result_to_save
         if self.load_mode == 'load_eve':
-            template_path = './template.pkl.gz' # result template
+            # template_path = './template.pkl.gz' # result template
 
 
             with torch.no_grad():
@@ -185,7 +185,8 @@ class GazeTest:
             predictions = torch.cat(predictions)
             
             preds_3D = pitchyaw_to_vector(predictions)
-
+            output_file_path = output_dir/ f'eve_{checkpoint_name}_test_vector_results.txt'
+            np.savetxt(output_file_path, preds_3D, delimiter=',')
             
             
             
